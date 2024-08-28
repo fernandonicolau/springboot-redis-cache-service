@@ -63,7 +63,15 @@ Isso gerará um arquivo JAR no diretório `target`.
 
    Onde `TTL` é o tempo de duração do cache em segundos.
 
-2. **Suba o projeto usando Docker Compose**
+2. **Compile o projeto usando Docker Build**
+
+   Para compilar o projeto, execute:
+
+   ```bash
+   docker build -t springbootrediscacheservice .
+   ```
+
+3. **Suba o projeto usando Docker Compose**
 
    Para iniciar o projeto, execute:
 
