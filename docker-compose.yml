@@ -10,3 +10,15 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - 8080:8080
+  springcommaven:
+    env_file:
+      - .env
+    build:
+      context: .
+      dockerfile: ./DockerfileComMaven
+    ports:
+      - 8080:8080
+    volumes:
+      - "targetjava:/home/app/target"
+volumes:
+  targetjava:
