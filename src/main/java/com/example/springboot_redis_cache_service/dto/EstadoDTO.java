@@ -10,6 +10,9 @@ public class EstadoDTO {
         this.nome = nome;
         this.sigla = sigla;
     }
+    
+    public EstadoDTO() {
+    }
 
     public Integer getId() {
         return id;

@@ -1,5 +1,6 @@
 package com.example.springboot_redis_cache_service.controller;
 
+import com.example.springboot_redis_cache_service.dto.CacheableResponseDTO;
 import com.example.springboot_redis_cache_service.dto.EstadoDTO;
 import com.example.springboot_redis_cache_service.service.EstadoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,11 @@ public class EstadoController {
     @GetMapping
     public List<EstadoDTO> findAll() {
         return estadoService.findAll();
+    }
+    
+    @GetMapping("/cacheable")
+    public CacheableResponseDTO<List<EstadoDTO>> findAllCacheable() {
+        return estadoService.findAllCacheable();
     }
 
     @GetMapping("/{id}")
