@@ -25,45 +25,55 @@ Fernando Nicolau Freitas da Silva
 docker --version
 ```
 
-## Instalação e Configuração do Ambiente
+## Resumo para Executar o Projeto Spring Boot Redis Cache Service
 
-1. **Instale o Docker:**
-   - [Instruções de instalação do Docker](https://docs.docker.com/engine/install/)
+Aqui está um guia rápido para você começar a usar o projeto:
 
-## Executando o Projeto Localmente
+### 1. Clonar o Repositório
 
-1. **Configure o arquivo `.env`**
+Primeiro, clone o repositório do projeto:
 
-   Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis de ambiente:
+```bash
+git clone https://github.com/fernandonicolau/springboot-redis-cache-service
+cd springboot-redis-cache-service
+```
 
-   ```env
-   POSTGRESS_URL=
-   POSTGRESS_USERNAME=
-   POSTGRESS_PASSWORD=
-   REDIS_HOST=
-   REDIS_PORT=
-   REDIS_USERNAME=
-   REDIS_PASSWORD=
-   TTL=
-   ```
+### 2. Configurar o Arquivo `.env`
 
-   Onde `TTL` é o tempo de duração do cache em segundos.
+Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis de ambiente:
 
-2. **Execute o projeto usando Docker**
+```env
+POSTGRESS_URL=
+POSTGRESS_USERNAME=
+POSTGRESS_PASSWORD=
+REDIS_HOST=
+REDIS_PORT=
+REDIS_USERNAME=
+REDIS_PASSWORD=
+TTL=10
+```
 
-   Para compilar e executar o projeto, use:
+Preencha as variáveis com as informações corretas para seu ambiente.
 
-   ```bash
-   docker-compose up
-   ```
+### 3. Executar o Projeto com Docker
 
-   Se você fizer modificações no Dockerfile, é recomendável usar o parâmetro --build para reconstruir as imagens antes de iniciar os containers.
+Para compilar e executar o projeto, use o seguinte comando:
 
-   Para parar e remover os containers, use:
+```bash
+docker-compose up
+```
 
-   ```bash
-   docker-compose down
-   ```
+Se fizer modificações no Dockerfile, use o parâmetro `--build` para reconstruir as imagens antes de iniciar os containers.
+
+Para parar e remover os containers:
+
+```bash
+docker-compose down
+```
+
+### Pronto!
+
+Após seguir esses passos, o serviço estará disponível, e você poderá acessar as rotas da API para recuperar estados e testar o cache com Redis.
 
 ## Funcionalidades
 
