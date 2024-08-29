@@ -26,7 +26,7 @@ public class EstadoController {
     }
 
     @GetMapping("/{id}")
-    public EstadoDTO findById(@PathVariable Integer id) {
+    public CacheableResponseDTO<EstadoDTO> findById(@PathVariable Integer id) {
         return estadoService.findById(id);
     }
 

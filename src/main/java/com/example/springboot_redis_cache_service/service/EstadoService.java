@@ -26,9 +26,7 @@ public class EstadoService {
     
     @Autowired
     private CacheManager cacheManager;
-
-    private static final String FIND_ALL_CACHE_KEY = "estado_findAll";
-    
+   
     public List<EstadoDTO> findAll() {
         List<Estado> estados = estadoRepository.findAll();
         return estados.stream()
@@ -38,8 +36,9 @@ public class EstadoService {
     
     public CacheableResponseDTO<List<EstadoDTO>> findAllCacheable() {	
     	
+        final String FIND_ALL_CACHE_KEY = "FIND_ALL_CACHE_KEY";
     	int TTL = Integer.parseInt(env.getProperty("TTL"));
-    	
+
     	CacheableResponseDTO<List<EstadoDTO>> cacheableResponse = cacheManager.getFromCache(FIND_ALL_CACHE_KEY);
     	
         if (cacheableResponse != null && cacheableResponse.getDateTime().isAfter(LocalDateTime.now().minusSeconds(TTL))) {
@@ -63,11 +62,29 @@ public class EstadoService {
 		return cacheableResponse;
     }
     
-    public EstadoDTO findById(Integer id) {
+    public CacheableResponseDTO<EstadoDTO> findById(Integer id) {
+
+    	final String FIND_ESTADO_ID_CACHE_KEY = "FIND_ESTADO_ID_CACHE_KEY_" + id;
+    	int TTL = Integer.parseInt(env.getProperty("TTL"));
+
+        CacheableResponseDTO<EstadoDTO> cacheableResponse = cacheManager.getFromCache(FIND_ESTADO_ID_CACHE_KEY);
+
+        if (cacheableResponse != null
+                && cacheableResponse.getDateTime().isAfter(LocalDateTime.now().minusSeconds(TTL))) {
+            return cacheableResponse;
+        }
+
         Estado estado = estadoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Estado não encontrado com id: " + id));
-        return EstadoMapper.toDTO(estado);
-        
+
+        EstadoDTO estatodDTO = EstadoMapper.toDTO(estado);
+
+        CacheableResponseDTO<EstadoDTO> newCacheableResponse = new CacheableResponseDTO<>(LocalDateTime.now(),
+                estatodDTO);
+        cacheManager.putInCache(FIND_ESTADO_ID_CACHE_KEY, newCacheableResponse);
+
+        return newCacheableResponse;
+
     }
 }
  
