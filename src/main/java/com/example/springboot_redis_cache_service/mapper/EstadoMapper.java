@@ -12,7 +12,13 @@ public class EstadoMapper {
         return new EstadoDTO(
                 estado.getId(),
                 estado.getNome(),
-                estado.getSigla()
-        );
+                estado.getSigla());
+    }
+
+    public static Estado toModel(EstadoDTO estadoDto) {
+        return new Estado(
+                estadoDto.getId(),
+                estadoDto.getNome(),
+                estadoDto.getSigla());
     }
 }

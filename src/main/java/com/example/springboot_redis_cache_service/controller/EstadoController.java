@@ -19,15 +19,25 @@ public class EstadoController {
     public List<EstadoDTO> findAll() {
         return estadoService.findAll();
     }
-    
+
     @GetMapping("/cacheable")
     public CacheableResponseDTO<List<EstadoDTO>> findAllCacheable() {
         return estadoService.findAllCacheable();
     }
 
     @GetMapping("/{id}")
-    public CacheableResponseDTO<EstadoDTO> findById(@PathVariable Integer id) {
+    public EstadoDTO findById(@PathVariable Integer id) {
         return estadoService.findById(id);
+    }
+
+    @GetMapping("/cacheable/{id}")
+    public CacheableResponseDTO<EstadoDTO> findByIdCacheable(@PathVariable Integer id) {
+        return estadoService.findByIdCacheable(id);
+    }
+
+    @PutMapping
+    public EstadoDTO update(@RequestBody EstadoDTO estadoDTO) {
+        return estadoService.update(estadoDTO);
     }
 
 }

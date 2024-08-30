@@ -23,8 +23,12 @@ public class EstadoRepository {
     public Optional<Estado> findById(Integer id) {
         String sql = "SELECT * FROM estados WHERE id = ?";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Estado.class), id)
-                           .stream()
-                           .findFirst();
+                .stream()
+                .findFirst();
+    }
+
+    public int update(Estado estado) {
+        String sql = "UPDATE estados SET nome = ?, sigla = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, estado.getNome(), estado.getSigla(), estado.getId());
     }
 }
-

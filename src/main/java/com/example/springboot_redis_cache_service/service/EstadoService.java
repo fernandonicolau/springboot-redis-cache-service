@@ -10,62 +10,69 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class EstadoService {
-	
-	@Autowired
-	private Environment env;
+
+    @Autowired
+    private Environment env;
 
     @Autowired
     private EstadoRepository estadoRepository;
-    
+
     @Autowired
     private CacheManager cacheManager;
-   
+
     public List<EstadoDTO> findAll() {
         List<Estado> estados = estadoRepository.findAll();
         return estados.stream()
                 .map(EstadoMapper::toDTO)
                 .collect(Collectors.toList());
     }
-    
-    public CacheableResponseDTO<List<EstadoDTO>> findAllCacheable() {	
-    	
-        final String FIND_ALL_CACHE_KEY = "FIND_ALL_CACHE_KEY";
-    	int TTL = Integer.parseInt(env.getProperty("TTL"));
 
-    	CacheableResponseDTO<List<EstadoDTO>> cacheableResponse = cacheManager.getFromCache(FIND_ALL_CACHE_KEY);
-    	
-        if (cacheableResponse != null && cacheableResponse.getDateTime().isAfter(LocalDateTime.now().minusSeconds(TTL))) {
+    public CacheableResponseDTO<List<EstadoDTO>> findAllCacheable() {
+
+        final String FIND_ALL_CACHE_KEY = "FIND_ALL_CACHE_KEY";
+        int TTL = Integer.parseInt(env.getProperty("TTL"));
+
+        CacheableResponseDTO<List<EstadoDTO>> cacheableResponse = cacheManager.getFromCache(FIND_ALL_CACHE_KEY);
+
+        if (cacheableResponse != null
+                && cacheableResponse.getDateTime().isAfter(LocalDateTime.now().minusSeconds(TTL))) {
             return cacheableResponse;
         }
 
         List<Estado> estados = estadoRepository.findAll();
-        
+
         if (estados != null && !estados.isEmpty()) {
-	        
-        	List<EstadoDTO> estatodDTO = estados.stream()
-	        .map(EstadoMapper::toDTO)
-	        .collect(Collectors.toList());
-        
-            CacheableResponseDTO<List<EstadoDTO>> newCacheableResponse = new CacheableResponseDTO<>(LocalDateTime.now(), estatodDTO);
+
+            List<EstadoDTO> estatodDTO = estados.stream()
+                    .map(EstadoMapper::toDTO)
+                    .collect(Collectors.toList());
+
+            CacheableResponseDTO<List<EstadoDTO>> newCacheableResponse = new CacheableResponseDTO<>(LocalDateTime.now(),
+                    estatodDTO);
             cacheManager.putInCache(FIND_ALL_CACHE_KEY, newCacheableResponse);
-            
+
             return newCacheableResponse;
         }
 
-		return cacheableResponse;
+        return cacheableResponse;
     }
-    
-    public CacheableResponseDTO<EstadoDTO> findById(Integer id) {
 
-    	final String FIND_ESTADO_ID_CACHE_KEY = "FIND_ESTADO_ID_CACHE_KEY_" + id;
-    	int TTL = Integer.parseInt(env.getProperty("TTL"));
+    public EstadoDTO findById(Integer id) {
+        Estado estado = estadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Estado não encontrado com id: " + id));
+        return EstadoMapper.toDTO(estado);
+    }
+
+    public CacheableResponseDTO<EstadoDTO> findByIdCacheable(Integer id) {
+
+        final String FIND_ESTADO_ID_CACHE_KEY = "FIND_ESTADO_ID_CACHE_KEY_" + id;
+        int TTL = Integer.parseInt(env.getProperty("TTL"));
 
         CacheableResponseDTO<EstadoDTO> cacheableResponse = cacheManager.getFromCache(FIND_ESTADO_ID_CACHE_KEY);
 
@@ -86,5 +93,12 @@ public class EstadoService {
         return newCacheableResponse;
 
     }
+
+    public EstadoDTO update(EstadoDTO estadoDto) {
+        int updateItem = estadoRepository.update(EstadoMapper.toModel(estadoDto));
+        if (updateItem == 1) {
+            return findById(estadoDto.getId());
+        }
+        return null;
+    }
 }
- 
